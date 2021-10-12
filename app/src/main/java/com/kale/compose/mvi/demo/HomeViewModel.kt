@@ -14,7 +14,6 @@ class HomeViewModel : BaseViewModel<HomeIntent, HomeViewState>() {
     override fun processIntent(intent: HomeIntent) {
         viewModelScope.launch {
 
-
         }
     }
 
