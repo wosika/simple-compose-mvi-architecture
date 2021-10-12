@@ -1,8 +1,6 @@
-package com.kale.compose.mvi.demo.ui.theme
+package com.kale.compose.mvi.demo.model
 
 import com.kale.compose.mvi.demo.App
-import com.kale.compose.mvi.demo.model.HomePageModel
-import com.kale.compose.mvi.demo.model.ResultModel
 import retrofit2.http.GET
 import retrofit2.http.Path
 

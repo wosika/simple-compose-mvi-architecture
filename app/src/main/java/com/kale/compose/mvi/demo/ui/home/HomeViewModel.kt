@@ -1,10 +1,9 @@
-package com.kale.compose.mvi.demo
+package com.kale.compose.mvi.demo.ui.home
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kale.compose.mvi.demo.model.HomePageModel
-import com.kale.compose.mvi.demo.ui.theme.Repository
+import com.kale.compose.mvi.demo.model.Repository
 import com.kale.simpl.mvi.BaseViewModel
 import com.kale.simpl.mvi.IIntent
 import com.kale.simpl.mvi.IViewState

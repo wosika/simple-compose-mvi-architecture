@@ -1,7 +1,7 @@
 package com.kale.compose.mvi.demo
 
 import android.app.Application
-import com.kale.compose.mvi.demo.ui.theme.Repository
+import com.kale.compose.mvi.demo.model.Repository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
