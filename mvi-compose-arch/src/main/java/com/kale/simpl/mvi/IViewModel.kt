@@ -1,10 +1,10 @@
 package com.kale.simpl.mvi
 
-interface IViewModel<A:IAction,VS:IViewState>{
+interface IViewModel<I:IIntent,VS:IViewState>{
 
 
     //处理传过来的意图
-    fun processAction(action:A)
+    fun processIntent(intent:I)
 
 
 

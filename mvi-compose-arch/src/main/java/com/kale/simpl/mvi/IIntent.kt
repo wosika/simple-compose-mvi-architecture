@@ -1,6 +1,6 @@
 package com.kale.simpl.mvi
 
 /**
- * 事件动作
+ * 意图动作
  */
-interface IAction
+interface IIntent
