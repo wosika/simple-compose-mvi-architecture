@@ -8,6 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.kale.compose.mvi.demo.ui.HomePage
 import com.kale.compose.mvi.demo.ui.theme.AndroidmvicomposearchitectureTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,9 +17,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             AndroidmvicomposearchitectureTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
+           /*     Surface(color = MaterialTheme.colors.background) {
                     Greeting("Android")
-                }
+                }*/
+                HomePage()
             }
         }
     }
@@ -33,6 +35,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     AndroidmvicomposearchitectureTheme {
-        Greeting("Android")
+        HomePage()
     }
 }

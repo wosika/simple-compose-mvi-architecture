@@ -1,5 +1,8 @@
 package com.kale.compose.mvi.demo.ui.theme
 
+import com.kale.compose.mvi.demo.App
+import com.kale.compose.mvi.demo.model.HomePageModel
+import com.kale.compose.mvi.demo.model.ResultModel
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -13,9 +16,10 @@ sealed class Repository {
 
         interface WanAndroid {
             @GET("article/list/{page}/json")
-            fun homeList(@Path("page") page: Int)
+            suspend fun getHomePageModel(@Path("page") page: Int): ResultModel<HomePageModel>
         }
 
+        val wanAndroid by lazy { App.retrofit.create(WanAndroid::class.java) }
 
     }
 
