@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel : BaseViewModel<HomeIntent, HomeViewState>() {
     //初始状态
-    override val _vsFlow: MutableStateFlow<HomeViewState> by lazy{
-        MutableStateFlow(HomeViewState(isLoading = true)).also {
+    override val _vsFlow: MutableStateFlow<HomeViewState> by lazy {
+        MutableStateFlow(HomeViewState(isLoading = true)).apply {
             viewModelScope.launch {
                 loadData()
             }
@@ -34,11 +34,16 @@ class HomeViewModel : BaseViewModel<HomeIntent, HomeViewState>() {
 
     private suspend fun loadData() {
         Log.d(javaClass.simpleName, "去加载网络数据")
-        _vsFlow.value = HomeViewState(true)
-        val result = Repository.RemoteRepository.wanAndroid.getHomePageModel(0)
-        Log.d(javaClass.simpleName,result.toString())
-        _vsFlow.value = HomeViewState(false, data = result.data)
-
+        kotlin.runCatching {
+            _vsFlow.value = _vsFlow.value.copy(isLoading = true)
+            Repository.RemoteRepository.wanAndroid.getHomePageModel(0)
+        }.onSuccess { result ->
+            Log.d(javaClass.simpleName, result.toString())
+            _vsFlow.value = vsFlow.value.copy(isLoading = false,data = result.data,isError = false)
+        }.onFailure {
+            it.printStackTrace()
+            _vsFlow.value =  vsFlow.value.copy(isLoading = false,isError = true)
+        }
     }
 }
 
