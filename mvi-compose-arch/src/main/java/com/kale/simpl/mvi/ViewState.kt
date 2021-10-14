@@ -3,4 +3,4 @@ package com.kale.simpl.mvi
 /**
  * UI状态
  */
-interface IViewState
+interface ViewState

@@ -20,16 +20,15 @@ import com.kale.compose.mvi.demo.model.HomeItemModel
 
 @Composable
 fun HomePage(vm: HomeViewModel = viewModel()) {
-    val viewState by vm.vsFlow.collectAsState()
+    //val viewState by vm.processor.collectAsState()
 
-
-    SwipeRefresh(state = SwipeRefreshState(viewState.isLoading), onRefresh = {
-        vm.processIntent(HomeEvent.LoadDataEvent)
+ /*   SwipeRefresh(state = SwipeRefreshState(viewState.isLoading), onRefresh = {
+        vm.sendEvent(HomeEvent.LoadDataEvent)
     }) {
         if (viewState.isError) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 TextButton(onClick = {
-                    vm.processIntent(HomeEvent.LoadDataEvent)
+                    vm.sendEvent(HomeEvent.LoadDataEvent)
                 }) {
                     Text(text = "网络错误请点击重试")
                 }
@@ -44,7 +43,7 @@ fun HomePage(vm: HomeViewModel = viewModel()) {
                 })
             }
         }
-    }
+    }*/
 }
 
 @Composable
