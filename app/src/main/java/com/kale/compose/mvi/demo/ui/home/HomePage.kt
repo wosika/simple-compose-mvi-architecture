@@ -20,9 +20,10 @@ import com.kale.compose.mvi.demo.model.HomeItemModel
 
 @Composable
 fun HomePage(vm: HomeViewModel = viewModel()) {
-    //val viewState by vm.processor.collectAsState()
 
- /*   SwipeRefresh(state = SwipeRefreshState(viewState.isLoading), onRefresh = {
+    val viewState by vm.state.collectAsState()
+
+    SwipeRefresh(state = SwipeRefreshState(viewState.isLoading), onRefresh = {
         vm.sendEvent(HomeEvent.LoadDataEvent)
     }) {
         if (viewState.isError) {
@@ -43,7 +44,7 @@ fun HomePage(vm: HomeViewModel = viewModel()) {
                 })
             }
         }
-    }*/
+    }
 }
 
 @Composable
