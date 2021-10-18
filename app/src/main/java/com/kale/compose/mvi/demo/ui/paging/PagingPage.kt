@@ -16,7 +16,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kale.compose.mvi.demo.model.HomeItemModel
 
 @Composable
-fun HomePage(){
+fun PagingPage(){
     Scaffold(
         topBar = {
             TopAppBar(

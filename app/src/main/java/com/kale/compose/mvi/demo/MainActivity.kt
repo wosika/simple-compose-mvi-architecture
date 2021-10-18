@@ -5,8 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.kale.compose.mvi.demo.ui.example.ExamplePage
-import com.kale.compose.mvi.demo.ui.paging.HomePage
+import com.kale.compose.mvi.demo.ui.main.MainPage
 import com.kale.compose.mvi.demo.ui.theme.AndroidmvicomposearchitectureTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,7 +17,7 @@ class MainActivity : ComponentActivity() {
            /*     Surface(color = MaterialTheme.colors.background) {
                     Greeting("Android")
                 }*/
-                ExamplePage()
+                MainPage()
             }
         }
     }
@@ -28,6 +27,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     AndroidmvicomposearchitectureTheme {
-        HomePage()
+        MainPage()
     }
 }

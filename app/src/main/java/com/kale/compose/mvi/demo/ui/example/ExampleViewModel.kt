@@ -33,7 +33,7 @@ class ExampleViewModel : ViewModel(), Processor<ExampleEvent, ExampleViewState> 
                         homePageModel.data
                     }.onSuccess {
                         _state.value =
-                            _state.value.copy(isLoading = false, data = emptyList(), error = null)
+                            _state.value.copy(isLoading = false, data = it.datas, error = null)
                     }.onFailure {
                         _state.value = _state.value.copy(isLoading = false, error = it)
                     }
