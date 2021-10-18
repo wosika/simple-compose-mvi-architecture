@@ -43,23 +43,30 @@ data class HomeItemModel(
     }
 }
 
-class HomeItemSource : PagingSource<Int, HomeItemModel>() {
+class HomeItemsSource : PagingSource<Int, HomeItemModel>() {
 
 
     override fun getRefreshKey(state: PagingState<Int, HomeItemModel>): Int? {
         return null
     }
 
+
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, HomeItemModel> {
 
         return try {
-
             val nextPage = params.key ?: 1
             val homePageModel = Repository.RemoteRepository.wanAndroid.getHomePageModel(nextPage)
+
+
             LoadResult.Page(
                 data = homePageModel.data.datas,
-                prevKey = homePageModel.data.curPage - 1,
-                nextKey = homePageModel.data.curPage + 1
+                prevKey =null,
+                nextKey = if (nextPage > homePageModel.data.size) {//这里是假设获取了8页之后就没有下一页了
+                    null
+                } else {
+                    nextPage + 1
+                }
             )
 
         } catch (e: Throwable) {
