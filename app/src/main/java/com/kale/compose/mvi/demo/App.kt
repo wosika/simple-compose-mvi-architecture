@@ -10,12 +10,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+        app = this
     }
 
 
     companion object {
 
-        val logging =  HttpLoggingInterceptor().apply {
+        lateinit var app: Application
+
+        val logging = HttpLoggingInterceptor().apply {
             this.setLevel(HttpLoggingInterceptor.Level.BASIC)
         }
 

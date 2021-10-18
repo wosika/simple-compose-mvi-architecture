@@ -1,10 +1,9 @@
-package com.kale.compose.mvi.demo.ui.home
+package com.kale.compose.mvi.demo.ui.paging
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -13,7 +12,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kale.compose.mvi.demo.model.HomeItemModel
 
@@ -33,7 +31,7 @@ fun HomePage(){
 
 
 @Composable
-private  fun Content(vm: HomeViewModel = viewModel()) {
+private  fun Content(vm: PagingViewModel = viewModel()) {
     val lazyItems = vm.pagingViewState.collectAsLazyPagingItems()
     val isRefreshState = rememberSwipeRefreshState(isRefreshing = false)
 
@@ -42,7 +40,7 @@ private  fun Content(vm: HomeViewModel = viewModel()) {
         lazyItems.refresh()
     }) {
         isRefreshState.isRefreshing = lazyItems.loadState.refresh is LoadState.Loading
-        LazyColumn(Modifier.fillMaxSize(), content = {
+        LazyColumn( content = {
             items(lazyItems) {
                 NewsItem(it!!)
             }
@@ -55,18 +53,37 @@ private  fun Content(vm: HomeViewModel = viewModel()) {
 
                     loadState.refresh is LoadState.Error -> {
                         val e = lazyItems.loadState.refresh as LoadState.Error
-                        item {
-
+                        if (lazyItems.itemCount<=0){
+                            item {
+                                Box(modifier = Modifier.fillMaxSize()) {
+                                    TextButton(modifier = Modifier.fillMaxSize(),onClick = {
+                                        lazyItems.retry()
+                                    }) {
+                                        Text(text = "网络错误请点击重试")
+                                    }
+                                }
+                            }
+                        }else{
+                            item {
                                 TextButton(modifier = Modifier.fillMaxSize(),onClick = {
                                     lazyItems.retry()
                                 }) {
                                     Text(text = "网络错误请点击重试")
                                 }
-
+                            }
                         }
+
                     }
                     loadState.append is LoadState.Error -> {
                         val e = lazyItems.loadState.append as LoadState.Error
+                        item {
+                            TextButton(modifier = Modifier.fillMaxSize(),onClick = {
+                                lazyItems.retry()
+                            }) {
+                                Text(text = "网络错误请点击重试")
+                            }
+
+                        }
                     }
                 }
             }
