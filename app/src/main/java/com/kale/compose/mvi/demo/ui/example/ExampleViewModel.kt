@@ -31,6 +31,11 @@ class ExampleViewModel : BaseViewModel<ExampleAction, ExampleViewState, ExampleE
                     )
                     shotEvent(ExampleEvent.ShowToast("加载成功"))
                 }.onFailure {
+                    updateViewState(
+                        state.value.copy(
+                            isLoading = false
+                        )
+                    )
                     shotEvent(ExampleEvent.ShowToast(it.message ?: "加载错误。。。"))
                 }
             }
