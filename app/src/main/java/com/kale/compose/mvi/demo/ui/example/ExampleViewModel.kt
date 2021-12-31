@@ -1,42 +1,37 @@
 package com.kale.compose.mvi.demo.ui.example
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+
 import com.kale.compose.mvi.demo.model.HomeItemModel
 import com.kale.compose.mvi.demo.model.Repository
-import com.kale.simpl.mvi.Event
-import com.kale.simpl.mvi.Processor
-import com.kale.simpl.mvi.ViewState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-
-class ExampleViewModel : ViewModel(), Processor<ExampleEvent, ExampleViewState> {
-
-    private val _state: MutableStateFlow<ExampleViewState> by lazy {
-        MutableStateFlow(
-            ExampleViewState(false)
-        )
-    }
-
-    override val state: StateFlow<ExampleViewState> by lazy { _state }
+import com.kale.simple.mvi.Action
+import com.kale.simple.mvi.BaseViewModel
+import com.kale.simple.mvi.Event
+import com.kale.simple.mvi.ViewState
 
 
-    override fun sendEvent(event: ExampleEvent) {
-        viewModelScope.launch {
-            when (event) {
-                ExampleEvent.Load -> {
-                    _state.value = _state.value.copy(isLoading = true)
-                    kotlin.runCatching {
-                        val homePageModel =
-                            Repository.RemoteRepository.wanAndroid.getHomePageModel(0)
-                        homePageModel.data
-                    }.onSuccess {
-                        _state.value =
-                            _state.value.copy(isLoading = false, data = it.datas, error = null)
-                    }.onFailure {
-                        _state.value = _state.value.copy(isLoading = false, error = it)
-                    }
+class ExampleViewModel : BaseViewModel<ExampleAction, ExampleViewState, ExampleEvent>() {
+
+    override fun initState(): ExampleViewState = ExampleViewState(true)
+
+    override suspend fun handlerAction(action: ExampleAction) {
+        when (action) {
+            ExampleAction.Load -> {
+                updateViewState(state.value.copy(isLoading = true))
+
+                kotlin.runCatching {
+                    val homePageModel =
+                        Repository.RemoteRepository.wanAndroid.getHomePageModel(0)
+                    homePageModel.data
+                }.onSuccess {
+                    updateViewState(
+                        state.value.copy(
+                            isLoading = false,
+                            data = it.datas
+                        )
+                    )
+                    shotEvent(ExampleEvent.ShowToast("加载成功"))
+                }.onFailure {
+                    shotEvent(ExampleEvent.ShowToast(it.message ?: "加载错误。。。"))
                 }
             }
         }
@@ -44,12 +39,16 @@ class ExampleViewModel : ViewModel(), Processor<ExampleEvent, ExampleViewState> 
 }
 
 
+sealed class ExampleAction : Action {
+    object Load : ExampleAction()
+}
+
+
 sealed class ExampleEvent : Event {
-    object Load : ExampleEvent()
+    data class ShowToast(val msg: String) : ExampleEvent()
 }
 
 data class ExampleViewState(
     val isLoading: Boolean = false,
-    val data: List<HomeItemModel> = emptyList(),
-    val error: Throwable? = null
+    val data: List<HomeItemModel> = emptyList()
 ) : ViewState

@@ -7,17 +7,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.kale.compose.mvi.demo.App
+import com.kale.compose.mvi.demo.ext.OneShotEffect
 import com.kale.compose.mvi.demo.model.HomeItemModel
+import kotlinx.coroutines.flow.collect
 
 
 @Composable
 fun ExamplePage() {
+
 
     Scaffold(topBar = {
         TopAppBar(
@@ -28,78 +31,63 @@ fun ExamplePage() {
 
 @Composable
 private fun Content(vm: ExampleViewModel = viewModel()) {
-    val viewState = vm.state.collectAsState()
+
+    val viewState by vm.state.collectAsState()
+
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        vm.event.collect {
+            when (it) {
+                is ExampleEvent.ShowToast -> {
+                    Toast.makeText(context, it.msg, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     val isRefreshState = rememberSwipeRefreshState(isRefreshing = false)
 
-
-    val isInit = remember {
-        mutableStateOf(true)
+    OneShotEffect {
+        vm.sendAction(ExampleAction.Load)
     }
 
     SwipeRefresh(state = isRefreshState, onRefresh = {
-        vm.sendEvent(ExampleEvent.Load)
+        vm.sendAction(ExampleAction.Load)
     }) {
-
-        isRefreshState.isRefreshing = viewState.value.isLoading
-        LazyColumn(content = {
-            if (isInit.value) {
-                vm.sendEvent(ExampleEvent.Load)
-                isInit.value = false
-            }
-            viewState.value.apply {
+        isRefreshState.isRefreshing = viewState.isLoading
+        LazyColumn {
+            viewState.apply {
                 items(data) { item ->
                     NewsItem(it = item)
                 }
-
                 if (!isLoading) {
                     when {
-                        error != null -> {
-                            if (data.isNotEmpty()) {
-                                Toast.makeText(App.app, "load error", Toast.LENGTH_SHORT).show()
-                                item {
-                                    Surface(modifier = Modifier.fillMaxSize()) {
-                                        ErrorContent {
-                                            vm.sendEvent(ExampleEvent.Load)
-                                        }
-                                    }
-                                }
-                            } else {
-                                item {
-                                    ErrorContent {
-                                        vm.sendEvent(ExampleEvent.Load)
-                                    }
-                                }
-                            }
-                        }
                         data.isEmpty() -> {
                             item {
-
                                 Surface(modifier = Modifier.fillMaxSize()) {
                                     EmptyContent {
-                                        vm.sendEvent(ExampleEvent.Load)
+                                        vm.sendAction(ExampleAction.Load)
                                     }
                                 }
-
                             }
                         }
                     }
                 }
             }
-        })
+        }
     }
 }
 
 @Composable
 fun ErrorContent(function: () -> Unit) {
-    TextButton(onClick = function,Modifier.fillMaxSize()) {
+    TextButton(onClick = function, Modifier.fillMaxSize()) {
         Text(text = "Load error,click to retry")
     }
 }
 
 @Composable
 fun EmptyContent(function: () -> Unit) {
-    TextButton(onClick = function,Modifier.fillMaxSize()) {
+    TextButton(onClick = function, Modifier.fillMaxSize()) {
         Text(text = "Content is empty,click to retry")
     }
 }
@@ -123,6 +111,5 @@ private fun NewsItem(it: HomeItemModel) {
             }
         }
     }
-
 
 }
