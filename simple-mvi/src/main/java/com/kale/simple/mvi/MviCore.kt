@@ -22,8 +22,10 @@ interface Event
  */
 interface Processor<in AT : Action, VS : ViewState, EV : Event> {
     val state: StateFlow<VS>
-    val event: Flow<EV>
+    val uiEvent: Flow<EV>
     fun sendAction(action: AT)
     fun updateViewState(viewState: VS) {}
-    fun shotEvent(event: EV)
+    fun sendUiEvent(event: EV)
+    suspend fun listenUiEvent(action: (event: EV) -> Unit)
+
 }
